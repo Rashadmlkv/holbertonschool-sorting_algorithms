@@ -6,7 +6,7 @@
  */
 void insertion_sort_list(listint_t **list)
 {
-	listint_t *tmp = *list, *swap;
+	listint_t *tmp = *list, *swap, *tmp2;
 
 	for (; tmp != NULL; tmp = tmp->next)
 	{
@@ -14,17 +14,29 @@ void insertion_sort_list(listint_t **list)
 		{
 			swap = tmp;
 			tmp = tmp->prev;
-			
 			tmp->next = swap->next;
-			swap->next = tmp;
-			if (tmp->next)
-				tmp->next->prev = tmp;
+                        if (tmp->next)
+                                tmp->next->prev = tmp;
 
-			swap->prev = tmp->prev;
-			tmp->prev = swap;
-			if (swap->prev)
-				swap->prev->next = swap;
+			tmp2 = tmp;
+			for (; tmp2->prev && (swap->n < tmp2->n); tmp2 = tmp2->prev)
+				;
+
+			if (!tmp2->prev)
+			{
+				swap->prev = tmp2->prev;
+				swap->next = tmp2;
+				tmp2->prev = swap;
+				*list = swap;
+			}
+			else
+			{
+				swap->prev = tmp2;
+				swap->next = tmp2->next;
+				tmp2->next = swap;
+				swap->next->prev = swap;
+			}
+			print_list(*list);
 		}
-		printf("___________________\n");
 	}
 }
